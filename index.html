@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Just Today</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F0EEFF;
+  --bg-grad1: #E0D8FF;
+  --bg-grad2: #FFE0EE;
+  --surface: #FFFFFF;
+  --surface2: #F7F5FF;
+  --accent: #7C5CFC;
+  --accent-dark: #5B3FD4;
+  --accent-light: #E8E2FF;
+  --accent2: #FF6B9D;
+  --green: #2DD4A0;
+  --green-dark: #1AAB7A;
+  --yellow: #FFD23F;
+  --text: #1E1640;
+  --text-mid: #6B5FA8;
+  --text-soft: #B0A8D8;
+  --border: #DDD6FF;
+  --border-shadow: #C4B8F8;
+  --progress-grad: linear-gradient(90deg, #7C5CFC 0%, #FF6B9D 100%);
+  --settings-bg: #FFFFFF;
+  --settings-border: #DDD6FF;
+  --overlay: rgba(30,22,64,0.35);
+}
+
+[data-dark="1"] {
+  --bg: #13102A;
+  --bg-grad1: #1E1545;
+  --bg-grad2: #2A1030;
+  --surface: #1E1B3A;
+  --surface2: #171430;
+  --accent-light: #2D2560;
+  --text: #EDE9FF;
+  --text-mid: #A99FD8;
+  --text-soft: #6B5FA8;
+  --border: #2D2560;
+  --border-shadow: #1A1440;
+  --settings-bg: #1E1B3A;
+  --settings-border: #2D2560;
+  --overlay: rgba(0,0,0,0.55);
+}
+
+[data-theme="ocean"] {
+  --accent: #0EA5E9;
+  --accent-dark: #0369A1;
+  --accent-light: #E0F2FE;
+  --accent2: #06B6D4;
+  --border: #BAE6FD;
+  --border-shadow: #7DD3FC;
+  --text-mid: #0369A1;
+  --text-soft: #7DD3FC;
+  --progress-grad: linear-gradient(90deg, #0EA5E9 0%, #06B6D4 100%);
+}
+[data-dark="1"][data-theme="ocean"] {
+  --bg: #0C1A2E;
+  --bg-grad1: #0F2644;
+  --bg-grad2: #0A1F38;
+  --surface: #0F2235;
+  --surface2: #0A1A2A;
+  --accent-light: #0C2540;
+  --border: #1A3A5C;
+  --border-shadow: #0D2440;
+  --text: #E0F2FE;
+  --text-mid: #38BDF8;
+  --text-soft: #0369A1;
+  --settings-bg: #0F2235;
+  --settings-border: #1A3A5C;
+}
+
+[data-theme="sunset"] {
+  --accent: #F97316;
+  --accent-dark: #C2410C;
+  --accent-light: #FFF1E6;
+  --accent2: #EF4444;
+  --border: #FED7AA;
+  --border-shadow: #FDBA74;
+  --text-mid: #C2410C;
+  --text-soft: #FDBA74;
+  --progress-grad: linear-gradient(90deg, #F97316 0%, #EF4444 100%);
+}
+[data-dark="1"][data-theme="sunset"] {
+  --bg: #1C1008;
+  --bg-grad1: #2D1800;
+  --bg-grad2: #2D0A0A;
+  --surface: #251508;
+  --surface2: #1C1008;
+  --accent-light: #2D1800;
+  --border: #4A2800;
+  --border-shadow: #3A1E00;
+  --text: #FFF1E6;
+  --text-mid: #FB923C;
+  --text-soft: #92400E;
+  --settings-bg: #251508;
+  --settings-border: #4A2800;
+}
+
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1.5rem 6rem;
+  transition: background 0.3s, color 0.3s;
+  position: relative;
+}
+
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  width: 500px; height: 500px;
+  background: var(--bg-grad1);
+  top: -150px; left: -150px;
+  opacity: 0.6;
+}
+body::after {
+  width: 400px; height: 400px;
+  background: var(--bg-grad2);
+  bottom: -100px; right: -100px;
+  opacity: 0.5;
+}
+
+.app {
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  z-index: 1;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+  position: relative;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1.6rem;
+  letter-spacing: -0.01em;
+  padding: 10px 24px;
+  border-radius: 99px;
+  box-shadow: 0 5px 0 var(--accent-dark);
+  margin-bottom: 10px;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.logo .dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--yellow);
+}
+
+.date-label {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-mid);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.settings-btn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--border-shadow);
+  transition: all 0.15s;
+  color: var(--text-mid);
+}
+.settings-btn:hover { transform: translateY(-50%) scale(1.08); }
+.settings-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+.xp-bar-wrap {
+  background: var(--surface);
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  padding: 13px 18px;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 3px 0 var(--border-shadow);
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.xp-label {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  color: var(--text-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+}
+
+.xp-track {
+  flex: 1;
+  height: 14px;
+  background: var(--accent-light);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.xp-fill {
+  height: 100%;
+  background: var(--progress-grad);
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  width: 0%;
+  position: relative;
+}
+.xp-fill::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 8px; right: 8px;
+  height: 3px;
+  background: rgba(255,255,255,0.35);
+  border-radius: 99px;
+}
+
+.xp-pct {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--accent);
+  min-width: 40px;
+  text-align: right;
+  transition: color 0.3s;
+}
+
+.input-wrap {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.task-input {
+  width: 100%;
+  background: var(--surface);
+  border: 2.5px solid var(--border);
+  border-radius: 16px;
+  padding: 15px 70px 15px 20px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 600;
+  color: var(--text);
+  outline: none;
+  box-shadow: 0 4px 0 var(--border-shadow);
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.3s, color 0.3s;
+  caret-color: var(--accent);
+}
+.task-input::placeholder { color: var(--text-soft); font-weight: 400; }
+.task-input:focus { border-color: var(--accent); box-shadow: 0 4px 0 var(--accent-dark); }
+
+.enter-badge {
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  background: var(--accent);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.task-list { display: flex; flex-direction: column; gap: 8px; }
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 2.5px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 0 var(--border-shadow);
+  animation: pop-in 0.22s cubic-bezier(0.34,1.56,0.64,1) both;
+  transition: box-shadow 0.15s, border-color 0.15s, opacity 0.2s, background 0.3s;
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.93) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.task.done {
+  opacity: 0.5;
+  box-shadow: none;
+  border-color: transparent;
+  background: var(--surface2);
+}
+
+.check-btn {
+  width: 26px; height: 26px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 2.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.check-btn:hover { border-color: var(--green); background: #EDFDF7; }
+.task.done .check-btn { background: var(--green); border-color: var(--green-dark); box-shadow: 0 3px 0 var(--green-dark); }
+.check-btn svg { width: 13px; height: 13px; stroke: white; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; fill: none; opacity: 0; transition: opacity 0.15s; }
+.task.done .check-btn svg { opacity: 1; }
+
+.task-text {
+  flex: 1;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  transition: color 0.2s;
+}
+.task.done .task-text { text-decoration: line-through; text-decoration-color: var(--text-soft); color: var(--text-soft); }
+
+.del-btn {
+  background: none; border: none; cursor: pointer;
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-soft);
+  font-size: 18px; font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+}
+.task:hover .del-btn { opacity: 1; }
+.del-btn:hover { background: #FFE8F0; color: #FF6B9D; }
+
+.empty-state { text-align: center; padding: 3rem 0 1rem; }
+.empty-state p { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 15px; color: var(--text-soft); margin-top: 10px; }
+
+.all-done-banner {
+  margin-top: 1.25rem;
+  background: var(--green);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  text-align: center;
+  border-radius: 14px;
+  padding: 14px 20px;
+  box-shadow: 0 4px 0 var(--green-dark);
+  animation: pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+/* SETTINGS OVERLAY */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  z-index: 100;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 1rem 2rem;
+}
+.overlay.open { display: flex; animation: fade-in 0.18s ease both; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.settings-panel {
+  background: var(--settings-bg);
+  border: 2px solid var(--settings-border);
+  border-radius: 24px;
+  padding: 24px 24px 28px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 -2px 40px rgba(0,0,0,0.15);
+  animation: slide-up 0.22s cubic-bezier(0.34,1.2,0.64,1) both;
+}
+@keyframes slide-up {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.panel-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--text);
+}
+.close-btn {
+  background: var(--accent-light);
+  border: none;
+  cursor: pointer;
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  font-size: 18px; font-weight: 700;
+  transition: background 0.15s;
+}
+.close-btn:hover { background: var(--border); }
+
+.setting-group { margin-bottom: 20px; }
+.setting-group-label {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-soft);
+  margin-bottom: 10px;
+}
+
+.theme-row { display: flex; gap: 10px; }
+.theme-chip {
+  flex: 1;
+  padding: 10px 6px;
+  border-radius: 14px;
+  border: 2.5px solid transparent;
+  cursor: pointer;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  transition: border-color 0.15s, transform 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.theme-chip:hover { transform: translateY(-2px); }
+.theme-chip.active { border-color: var(--accent); }
+.theme-dot-row { display: flex; gap: 4px; justify-content: center; }
+.tdot { width: 12px; height: 12px; border-radius: 50%; }
+
+.dark-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface2);
+  border-radius: 14px;
+  padding: 12px 16px;
+}
+.dark-row-label {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+
+.toggle {
+  width: 46px; height: 26px;
+  background: var(--border);
+  border-radius: 99px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  border: none;
+  flex-shrink: 0;
+}
+.toggle.on { background: var(--accent); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 20px; height: 20px;
+  background: white;
+  border-radius: 50%;
+  top: 3px; left: 3px;
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle.on::after { transform: translateX(20px); }
+
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface2);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+}
+.setting-row-label {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+
+.font-btns { display: flex; gap: 6px; }
+.font-btn {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  color: var(--text-mid);
+  transition: all 0.15s;
+}
+.font-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+/* CONFETTI */
+.confetti-piece {
+  position: fixed;
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo"><div class="dot"></div> Just Today</div>
+    <div class="date-label" id="date-label"></div>
+    <button class="settings-btn" id="settings-btn" aria-label="Open settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </header>
+
+  <div class="xp-bar-wrap">
+    <span class="xp-label">Progress</span>
+    <div class="xp-track"><div class="xp-fill" id="xp-fill"></div></div>
+    <span class="xp-pct" id="xp-pct">0%</span>
+  </div>
+
+  <div class="input-wrap">
+    <input class="task-input" id="task-input" type="text" placeholder="What do you need to do today?" autocomplete="off" spellcheck="true" />
+    <span class="enter-badge" id="enter-badge">↵ Enter</span>
+  </div>
+
+  <div class="task-list" id="task-list"></div>
+</div>
+
+<!-- Settings overlay -->
+<div class="overlay" id="overlay">
+  <div class="settings-panel">
+    <div class="panel-header">
+      <span class="panel-title">Settings</span>
+      <button class="close-btn" id="close-settings">&times;</button>
+    </div>
+
+    <div class="setting-group">
+      <div class="setting-group-label">Color theme</div>
+      <div class="theme-row">
+        <div class="theme-chip active" data-theme="purple" style="background:#F0EEFF;color:#5B3FD4;">
+          <div class="theme-dot-row">
+            <div class="tdot" style="background:#7C5CFC;"></div>
+            <div class="tdot" style="background:#FF6B9D;"></div>
+            <div class="tdot" style="background:#2DD4A0;"></div>
+          </div>
+          Purple
+        </div>
+        <div class="theme-chip" data-theme="ocean" style="background:#E0F2FE;color:#0369A1;">
+          <div class="theme-dot-row">
+            <div class="tdot" style="background:#0EA5E9;"></div>
+            <div class="tdot" style="background:#06B6D4;"></div>
+            <div class="tdot" style="background:#2DD4A0;"></div>
+          </div>
+          Ocean
+        </div>
+        <div class="theme-chip" data-theme="sunset" style="background:#FFF1E6;color:#C2410C;">
+          <div class="theme-dot-row">
+            <div class="tdot" style="background:#F97316;"></div>
+            <div class="tdot" style="background:#EF4444;"></div>
+            <div class="tdot" style="background:#FFD23F;"></div>
+          </div>
+          Sunset
+        </div>
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <div class="setting-group-label">Appearance</div>
+      <div class="dark-row">
+        <span class="dark-row-label">🌙 Dark mode</span>
+        <button class="toggle" id="dark-toggle" role="switch" aria-checked="false"></button>
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <div class="setting-group-label">Options</div>
+      <div class="setting-row">
+        <span class="setting-row-label">🔠 Font size</span>
+        <div class="font-btns">
+          <button class="font-btn" data-size="14">S</button>
+          <button class="font-btn active" data-size="15">M</button>
+          <button class="font-btn" data-size="17">L</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span class="setting-row-label">👁️ Hide completed tasks</span>
+        <button class="toggle" id="hide-toggle" role="switch" aria-checked="false"></button>
+      </div>
+      <div class="setting-row">
+        <span class="setting-row-label">🎊 Confetti at 100%</span>
+        <button class="toggle on" id="confetti-toggle" role="switch" aria-checked="true"></button>
+      </div>
+      <div class="setting-row" style="margin-bottom:0">
+        <span class="setting-row-label">🔔 Sound on complete</span>
+        <button class="toggle on" id="sound-toggle" role="switch" aria-checked="true"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORE_KEY   = 'jt_tasks_v3';
+const DATE_KEY    = 'jt_date_v3';
+const PREFS_KEY   = 'jt_prefs_v3';
+
+const defaultPrefs = { dark: false, theme: 'purple', fontSize: 15, hideCompleted: false, confetti: true, sound: true };
+
+function loadPrefs() {
+  try { return Object.assign({}, defaultPrefs, JSON.parse(localStorage.getItem(PREFS_KEY))); }
+  catch { return Object.assign({}, defaultPrefs); }
+}
+function savePrefs() { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); }
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+function loadTasks() {
+  const saved = localStorage.getItem(STORE_KEY);
+  const savedDate = localStorage.getItem(DATE_KEY);
+  const today = todayStr();
+  let tasks = saved ? JSON.parse(saved) : [];
+  if (savedDate && savedDate !== today) tasks = tasks.filter(t => !t.done);
+  localStorage.setItem(DATE_KEY, today);
+  localStorage.setItem(STORE_KEY, JSON.stringify(tasks));
+  return tasks;
+}
+function saveTasks() { localStorage.setItem(STORE_KEY, JSON.stringify(tasks)); }
+
+let tasks = loadTasks();
+let prefs = loadPrefs();
+let prevPct = 0;
+
+function applyPrefs() {
+  const root = document.documentElement;
+  root.setAttribute('data-dark', prefs.dark ? '1' : '0');
+  root.setAttribute('data-theme', prefs.theme);
+  document.querySelectorAll('.task-text').forEach(el => el.style.fontSize = prefs.fontSize + 'px');
+  document.getElementById('task-input').style.fontSize = prefs.fontSize + 'px';
+
+  document.getElementById('dark-toggle').classList.toggle('on', prefs.dark);
+  document.getElementById('dark-toggle').setAttribute('aria-checked', prefs.dark);
+  document.getElementById('hide-toggle').classList.toggle('on', prefs.hideCompleted);
+  document.getElementById('hide-toggle').setAttribute('aria-checked', prefs.hideCompleted);
+  document.getElementById('confetti-toggle').classList.toggle('on', prefs.confetti);
+  document.getElementById('confetti-toggle').setAttribute('aria-checked', prefs.confetti);
+  document.getElementById('sound-toggle').classList.toggle('on', prefs.sound);
+  document.getElementById('sound-toggle').setAttribute('aria-checked', prefs.sound);
+
+  document.querySelectorAll('.theme-chip').forEach(c => c.classList.toggle('active', c.dataset.theme === prefs.theme));
+  document.querySelectorAll('.font-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.size) === prefs.fontSize));
+}
+
+function playDing() {
+  if (!prefs.sound) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(880, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(1100, ctx.currentTime + 0.08);
+    g.gain.setValueAtTime(0.25, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + 0.35);
+  } catch(e) {}
+}
+
+function launchConfetti() {
+  if (!prefs.confetti) return;
+  const colors = ['#7C5CFC','#FF6B9D','#FFD23F','#2DD4A0','#0EA5E9','#F97316'];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left: ${Math.random() * 100}vw;
+      top: -10px;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      width: ${6 + Math.random() * 8}px;
+      height: ${6 + Math.random() * 8}px;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+      animation-duration: ${1.5 + Math.random() * 2}s;
+      animation-delay: ${Math.random() * 0.6}s;
+    `;
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+function render() {
+  const list = document.getElementById('task-list');
+  const fill = document.getElementById('xp-fill');
+  const pct  = document.getElementById('xp-pct');
+
+  list.innerHTML = '';
+
+  const total = tasks.length;
+  const doneCount = tasks.filter(t => t.done).length;
+  const p = total ? Math.round((doneCount / total) * 100) : 0;
+
+  fill.style.width = p + '%';
+  pct.textContent  = p + '%';
+
+  if (p === 100 && prevPct < 100 && total > 0) launchConfetti();
+  prevPct = p;
+
+  const visible = prefs.hideCompleted ? tasks.filter(t => !t.done) : tasks;
+
+  if (!total) {
+    list.innerHTML = `<div class="empty-state"><p>Nothing here yet — add your first task above!</p></div>`;
+    return;
+  }
+
+  visible.forEach((task) => {
+    const i = tasks.indexOf(task);
+    const row = document.createElement('div');
+    row.className = 'task' + (task.done ? ' done' : '');
+
+    const check = document.createElement('div');
+    check.className = 'check-btn';
+    check.setAttribute('role', 'checkbox');
+    check.setAttribute('aria-checked', String(task.done));
+    check.setAttribute('tabindex', '0');
+    check.innerHTML = `<svg viewBox="0 0 12 10"><polyline points="1.5,5 5,8.5 10.5,1.5"/></svg>`;
+    check.addEventListener('click', () => toggle(i));
+    check.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(i); }});
+
+    const text = document.createElement('span');
+    text.className = 'task-text';
+    text.style.fontSize = prefs.fontSize + 'px';
+    text.textContent = task.text;
+
+    const del = document.createElement('button');
+    del.className = 'del-btn';
+    del.innerHTML = '&times;';
+    del.setAttribute('aria-label', 'Remove task');
+    del.addEventListener('click', () => remove(i));
+
+    row.appendChild(check);
+    row.appendChild(text);
+    row.appendChild(del);
+    list.appendChild(row);
+  });
+
+  if (total > 0 && doneCount === total) {
+    const banner = document.createElement('div');
+    banner.className = 'all-done-banner';
+    banner.textContent = '★★★  All done! Great work today.';
+    list.appendChild(banner);
+  } else if (prefs.hideCompleted && doneCount > 0 && doneCount < total) {
+    const note = document.createElement('p');
+    note.style.cssText = 'text-align:center;font-size:13px;color:var(--text-soft);padding:8px 0;font-family:Nunito,sans-serif;font-weight:700;';
+    note.textContent = `${doneCount} completed task${doneCount > 1 ? 's' : ''} hidden`;
+    list.appendChild(note);
+  }
+}
+
+function capitalizeFirst(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+
+function addTask(raw) {
+  const text = capitalizeFirst(raw.trim());
+  if (!text) return;
+  tasks.push({ text, done: false });
+  saveTasks(); render();
+}
+
+function toggle(i) {
+  const wasUndone = !tasks[i].done;
+  tasks[i].done = !tasks[i].done;
+  if (wasUndone) playDing();
+  saveTasks(); render();
+}
+
+function remove(i) { tasks.splice(i, 1); saveTasks(); render(); }
+
+const input = document.getElementById('task-input');
+const badge = document.getElementById('enter-badge');
+input.addEventListener('input', () => { badge.style.opacity = input.value.trim() ? '1' : '0'; });
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { addTask(input.value); input.value = ''; badge.style.opacity = '0'; }
+});
+
+document.getElementById('settings-btn').addEventListener('click', () => {
+  document.getElementById('overlay').classList.add('open');
+});
+document.getElementById('close-settings').addEventListener('click', () => {
+  document.getElementById('overlay').classList.remove('open');
+});
+document.getElementById('overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('overlay')) document.getElementById('overlay').classList.remove('open');
+});
+
+document.getElementById('dark-toggle').addEventListener('click', () => {
+  prefs.dark = !prefs.dark; savePrefs(); applyPrefs();
+});
+document.getElementById('hide-toggle').addEventListener('click', () => {
+  prefs.hideCompleted = !prefs.hideCompleted; savePrefs(); applyPrefs(); render();
+});
+document.getElementById('confetti-toggle').addEventListener('click', () => {
+  prefs.confetti = !prefs.confetti; savePrefs(); applyPrefs();
+});
+document.getElementById('sound-toggle').addEventListener('click', () => {
+  prefs.sound = !prefs.sound; savePrefs(); applyPrefs();
+});
+
+document.querySelectorAll('.theme-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    prefs.theme = chip.dataset.theme; savePrefs(); applyPrefs();
+  });
+});
+document.querySelectorAll('.font-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    prefs.fontSize = parseInt(btn.dataset.size); savePrefs(); applyPrefs(); render();
+  });
+});
+
+function setDateLabel() {
+  document.getElementById('date-label').textContent = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric'
+  });
+}
+function scheduleMidnightReset() {
+  const now = new Date();
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  setTimeout(() => { tasks = loadTasks(); setDateLabel(); render(); scheduleMidnightReset(); }, next - now);
+}
+
+setDateLabel();
+applyPrefs();
+render();
+scheduleMidnightReset();
+</script>
+</body>
+</html>
